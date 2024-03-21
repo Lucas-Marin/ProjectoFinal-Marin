@@ -1,0 +1,15 @@
+.CartItemDetail {
+  height: 200px;
+}
+
+.CartImage {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+}
+.CartImage > img {
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  object-fit: cover;
+}
