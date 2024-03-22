@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
-
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import IconButton from '@mui/material/IconButton';
 const ItemCount = ({ counter, addOne, subOne, onAdd }) => {
   return (
     <>
@@ -16,7 +17,9 @@ const ItemCount = ({ counter, addOne, subOne, onAdd }) => {
           restar
         </Button>
 
-        <Button variant="outlined" onClick={ ()=> onAdd(counter) }>agregar al carrito</Button>
+        <Button color="success" variant="contained" onClick={ ()=> onAdd(counter) }>agregar al carrito <IconButton color= "inherit" aria-label="add to shopping cart">
+        <AddShoppingCartIcon />
+      </IconButton> </Button>
       </div>
     </>
   );

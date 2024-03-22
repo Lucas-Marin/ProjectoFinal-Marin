@@ -1,36 +1,51 @@
 import ItemList from "./ItemList";
-import { getProducts } from "../../../productsMock";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import { db } from "../../../firebaseConfig";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const ItemListContainer = () => {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  let productsCollection = collection(db, "products");
   useEffect(() => {
-    setIsLoading(true);
-    getProducts().then((resp) => {
-      if (category) {
-        const productsFilter = resp.filter(
-          (product) => product.category === category
-        );
-        setProducts(productsFilter);
-      } else {
-        setProducts(resp);
-      }
+    setIsLoading(true)
+  
+    let consulta;
+    if(category){
+      
+      let productsFiltered = query( productsCollection, where( "category","==" , category ));
+      consulta = productsFiltered
+    }else{
+      consulta = productsCollection
+    }
+    
+    getDocs(consulta)
+    .then((res) => {
+      let nuevoArray = res.docs.map( (elemento) => {
+        return {...elemento.data(), id: elemento.id};
+      });
 
-      setIsLoading(false);
-    });
+        setProducts(nuevoArray);
+
+    }).finally(()=>{setIsLoading(false)});
   }, [category]);
 
+  if (isLoading) {
+    return (
+      <Box sx={{ width: "100%" }}>
+        <LinearProgress />
+        <LinearProgress />
+      </Box>
+    );
+  }
   return (
     <>
-      {isLoading ? (
-        <h2>Cargando productos...</h2>
-      ) : (
-        <ItemList products={products} />
-      )}
+      <ItemList products={products} />
     </>
   );
 };
